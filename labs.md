@@ -22,7 +22,13 @@ Follow along using the MITRE ATT&CK Navigator https://mitre-attack.github.io/att
 - Result: MITRE baseline (blue), Arctic Wolf CTI (orange), overlap (purple).
 [Result](Akira_G1024_MITRE_plus_ArcticWolf_CTI_Merged.json)
 
-# Lab 2: Cyballistics – Analyze the Adversary's Arsenal
+# Lab 2: Slicing and Dicing ATT&CK with MITRE Attck Lens
+
+- Visit the new Think Red Act Blue features of [ATT&CK Lens](lens.thinkredactblue.com)
+- Created by Ismael Valenzuela and maintained under the new Think Red Act Blue platform.
+- Follow along using https://lens.thinkredactblue.com
+
+# Lab 3: Cyballistics – Analyze the Adversary's Arsenal
 
 - Clone at github.com/BishopFox/sliver
 - Point Claude Code at github.com/BishopFox/sliver. 
@@ -31,9 +37,9 @@ Follow along using the MITRE ATT&CK Navigator https://mitre-attack.github.io/att
 - Pick one technique; ask Claude to walk through the code
 - Document Technique ID | Source File | Behavior | Detection Opportunity
 
-# Lab 3 - Threat Modeling – Visibility & Coverage with Think Red Act Blue ATT&CK Lens
+# Lab 4 - Threat Modeling – Visibility & Coverage with Think Red Act Blue ATT&CK Lens
 
-- Slicing and Dicing ATT&CK with Think Red Act Blue ATT&CK Lens
+- Use the Act Blue features of [ATT&CK Lens](lens.thinkredactblue.com)
 - Created by Ismael Valenzuela and maintained under the new Think Red Act Blue platform.
 - Follow along using https://lens.thinkredactblue.com
 
