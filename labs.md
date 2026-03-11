@@ -24,7 +24,7 @@ Follow along using the MITRE ATT&CK Navigator https://mitre-attack.github.io/att
 
 # Lab 2: Slicing and Dicing ATT&CK with MITRE Attck Lens
 
-- Visit the new Think Red Act Blue features of [ATT&CK Lens](lens.thinkredactblue.com)
+- Visit the new Think Red Act Blue features of ATT&CK Lens https://lens.thinkredactblue.com
 - Created by Ismael Valenzuela and maintained under the new Think Red Act Blue platform.
 - Follow along using https://lens.thinkredactblue.com
 
@@ -39,7 +39,7 @@ Follow along using the MITRE ATT&CK Navigator https://mitre-attack.github.io/att
 
 # Lab 4 - Threat Modeling – Visibility & Coverage with Think Red Act Blue ATT&CK Lens
 
-- Use the Act Blue features of [ATT&CK Lens](lens.thinkredactblue.com)
+- Use the Act Blue features of ATT&CK Lens https://lens.thinkredactblue.com
 - Created by Ismael Valenzuela and maintained under the new Think Red Act Blue platform.
 - Follow along using https://lens.thinkredactblue.com
 
