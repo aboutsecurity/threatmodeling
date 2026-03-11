@@ -1,7 +1,7 @@
 <h1> Practical Threat Modeling with MITRE ATT&CK </h1>
 <h2> By Ismael Valenzuela <h2>
 
-> **Stay sharp:** Subscribe to [The Monday Brief](https://ismael.substack.com) for weekly threat intelligence and adversary insights that feed your threat models.
+> **Stay sharp:** Subscribe to [The Monday Brief](https://www.themondaybrief.com) for weekly threat intelligence and adversary insights that feed your threat models.
 
 # Demo 1: AI-Assisted Attack Tree from a DFD
 
