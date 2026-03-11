@@ -33,11 +33,9 @@ Follow along using the MITRE ATT&CK Navigator https://mitre-attack.github.io/att
 
 # Lab 3 - Threat Modeling – Visibility & Coverage with Think Red Act Blue ATT&CK Lens
 
-Slicing and Dicing ATT&CK with Think Red Act Blue ATT&CK Lens
-
-Created by Ismael Valenzuela and maintained under the new Think Red Act Blue platform.
-
-Follow along using https://lens.thinkredactblue.com
+- Slicing and Dicing ATT&CK with Think Red Act Blue ATT&CK Lens
+- Created by Ismael Valenzuela and maintained under the new Think Red Act Blue platform.
+- Follow along using https://lens.thinkredactblue.com
 
 
 
