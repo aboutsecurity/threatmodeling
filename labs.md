@@ -1,9 +1,12 @@
 <h1> Practical Threat Modeling with MITRE ATT&CK </h1>
+<h2> By Ismael Valenzuela <h2>
+
+> **Stay sharp:** Subscribe to [The Monday Brief](https://ismael.substack.com) for weekly threat intelligence and adversary insights that feed your threat models.
 
 # Demo 1: AI-Assisted Attack Tree from a DFD
 
 - Open claude.ai, paste the prompt in [Live Demo](HACME_Cats_Live_Demo.md)
-- Review the output[Threat Model](HACME_Cats_Threat_Model.html)
+- Review the output [Threat Model](HACME_Cats_Threat_Model.html)
 
 # Lab 1: Threat Modeling - Am I a Target?
 
